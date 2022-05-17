@@ -6,8 +6,8 @@
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 
-String dId = "43534534";
-String webhook_pass = "RWGtjAPBQs";
+String dId = "34534534534";
+String webhook_pass = "kHzVGUJWqJ";
 String webhook_endpoint = "http://192.168.0.6:3001/v1/getdevicecredentials";
 const char *mqtt_server = "192.168.0.6";
 
@@ -216,6 +216,8 @@ bool get_mqtt_credentials(){
         String responseBody = http.getString();
         Serial.println(boldGreen + "Credenciales obtenidas correctamente " + fontReset);
         deserializeJson(mqtt_data_doc, responseBody); // deserializar json
+        
+        
         http.end();
         delay(1000);
     }
@@ -239,6 +241,7 @@ bool reconnect(){
     // c_str() para convertir string a char*
     if (client.connect(str_client_id.c_str(), username, password)){ // conectar al servidor
         Serial.println(Green + "Conectado al servidor MQTT" + fontReset);
+        client.subscribe((str_topic + "+/actdata").c_str());
         delay(1000);          
         return true;
     }else{
@@ -252,7 +255,6 @@ bool reconnect(){
 }
 
 void callback(char* topic, byte* payload, unsigned int length){
-
    String incoming = "";
    for (int i = 0; i < length; i++){ // recorrer tantas veces como caracteres tenga el payload
      incoming += (char)payload[i] ; // cambiar el byte a char y concatenarlo a la variable incoming
